@@ -2,22 +2,18 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Itbeard.Data;
 using Itbeard.Data.Repositories;
 using Itbeard.Data.Repositories.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+using Module = Autofac.Module;
 
 namespace Itbeard.Di
 {
-    public class AutofacContainer
+    public class WebApiDiModule : Module
     {
-        public IContainer Build(IServiceCollection services)
+        protected override void Load(ContainerBuilder builder)
         {
             Services.AssemblyRunner.Run();
-
-            var builder = new ContainerBuilder();
-            builder.Populate(services);
             var assemblies = AppDomain.CurrentDomain
                 .GetAssemblies()
                 .OrderByDescending(a => a.FullName)
@@ -25,10 +21,8 @@ namespace Itbeard.Di
 
             ServicesRegister(ref builder, assemblies);
             RepositoriesRegister(ref builder, assemblies);
-
-            return builder.Build();
         }
-        
+
         private void ServicesRegister(ref ContainerBuilder builder, Assembly[] assemblies)
         {
             var servicesAssembly = assemblies.FirstOrDefault(t => t.FullName.ToLower().Contains("itbeard.services"));

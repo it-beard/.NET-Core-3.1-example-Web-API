@@ -1,10 +1,11 @@
-﻿using System;
-using Autofac.Extensions.DependencyInjection;
+﻿using Autofac;
+using Itbeard.Di;
 using Itbeard.Web.AppStart;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Itbeard.Web
 {
@@ -17,25 +18,40 @@ namespace Itbeard.Web
             this.configuration = configuration;
         }
         
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
-            services.AddMvc();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+            services.AddControllers();
             services.AddAutoMapperCustom();
             services.AddDatabaseContext(configuration);
-            
-            return new AutofacServiceProvider(services.ConfigureAutofac());
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new WebApiDiModule());
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             
-            app.UseConfiguredCors();
-            app.UseMvc();
+            app.UseCors("CorsPolicy");
+            app.UseRouting();
+            
+            app.UseEndpoints(endpoints => {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=shortener}/{action=Get}/{id?}");
+            });
         }
     }
 }
