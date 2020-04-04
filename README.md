@@ -9,17 +9,17 @@
 
 **Automapper 9.0** использован как маппер
 
-**EntityFrameforkCore 2.1** использован как ORM (посредник между приложением и БД). Механизм миграций настроен и работает через **dotnet-ef tool**
+**EntityFrameforkCore 3.1** использован как ORM (посредник между приложением и БД). Механизм миграций настроен и работает через **dotnet-ef tool**
 
 Весь код написан и запускается в среде разработки JetBrains **Rider**
 
-Запись стрима с лайвкодингом этой болванки: https://youtu.be/w6SOHs-0CJY
+Запись стрима с лайвкодингом этой болванки: https://youtu.be/r0yO2TEhdIE
 
 
 ...........................
 
 
-### This is an example Web API based on .NET Core 2.1
+### This is an example Web API based on .NET Core 3.1
 App has simple three-layers architecture. 
 All business logic concentrate on services.
 
@@ -27,6 +27,6 @@ All business logic concentrate on services.
 
 **Automapper 9.0** used as mapping library
 
-**EntityFrameforkCore 2.1** used as ORM. Migration mechanism setup and works through **dotnet-ef tool**
+**EntityFrameforkCore 3.1** used as ORM. Migration mechanism setup and works through **dotnet-ef tool**
 
 All code made by JetBrains **Rider** IDE
