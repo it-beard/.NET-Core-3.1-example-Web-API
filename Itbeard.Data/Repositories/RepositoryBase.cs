@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Itbeard.Core.Exceptions;
 using Itbeard.Data.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -73,15 +74,22 @@ namespace Itbeard.Data.Repositories
 
         public virtual async Task<TEntity> UpdateAsync(TEntity entityToUpdate)
         {
-            if (context.Entry(entityToUpdate).State == EntityState.Detached)
+            try
             {
-                dbSet.Attach(entityToUpdate);
-            }
+                if (context.Entry(entityToUpdate).State == EntityState.Detached)
+                {
+                    dbSet.Attach(entityToUpdate);
+                }
 
-            context.Entry(entityToUpdate).State = EntityState.Modified;
-            context.ChangeTracker.AutoDetectChangesEnabled = false;
-            await context.SaveChangesAsync();
-            return entityToUpdate;
+                context.Entry(entityToUpdate).State = EntityState.Modified;
+                context.ChangeTracker.AutoDetectChangesEnabled = false;
+                await context.SaveChangesAsync();
+                return entityToUpdate;
+            }
+            catch (Exception e)
+            {
+                throw new RepositoryException(e.Message, e.InnerException, typeof(TEntity).ToString());
+            }
         }
 
         public virtual async Task<IList<TEntity>> UpdateRangeAsync(IList<TEntity> entities)

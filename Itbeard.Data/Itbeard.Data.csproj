@@ -15,4 +15,8 @@
       <Folder Include="Migrations" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Itbeard.Core\Itbeard.Core.csproj" />
+    </ItemGroup>
+
 </Project>
